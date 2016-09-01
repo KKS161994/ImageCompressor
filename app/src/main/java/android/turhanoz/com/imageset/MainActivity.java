@@ -47,10 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/jpeg");
                 startActivityForResult(intent, Galresultcode);
-          /*      Intent i = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, Galresultcode);
-          */  }
+            }
         });
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,9 +80,17 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 selectedImageUri = getImageUri(getApplicationContext(), photo);
                 Uri newuri = Uri.parse("file://"+compressImage.compressImage(selectedImageUri.toString(), this));
-                createDirectoryAndSaveFile(photo,"hellobitch");
                 Log.d("File saved ","File saved");
-                //new uri is the uri of new compressed image
+                try
+                {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver() , newuri);
+                    createDirectoryAndSaveFile(bitmap,"hellobitches");
+
+                }
+                catch (Exception e)
+                {
+                    //handle exception
+                }//new uri is the uri of new compressed image
               } else {
                 Uri uri = data.getData();
                 String[] filepathcolumn = {MediaStore.Images.Media.DATA};
@@ -128,12 +133,7 @@ Log.d("SF","SF");
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
